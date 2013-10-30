@@ -1,0 +1,7 @@
+hftp.sublime-project
+hftp.sublime-workspace
+*.o
+*.out
+bin
+log
+
