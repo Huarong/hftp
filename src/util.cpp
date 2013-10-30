@@ -8,6 +8,8 @@
 #include <locale>
 #include <cstdlib>
 
+#include "util.h"
+
 // http://stackoverflow.com/a/236803/1282982
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
     std::stringstream ss(s);
@@ -58,11 +60,7 @@ std::string int_to_string(const int n) {
 //////////////////////////////////////////////////////////////////////////////
 
 // int main(int argc, char const *argv[]) {
-//     const std::string cmd("    hello,  world   ,   ,  may space");
-//     std::vector<std::string> elems = split(cmd, ' ');
-//     for (std::vector<std::string>::iterator iter = elems.begin(); iter != elems.end(); ++iter) {
-//         strip(*iter);
-//         std::cout << *iter << std::endl;
-//     }
+//     // write2screen(3, "hello", "hwo", "shit");
 //     return 0;
 // }
+
