@@ -33,6 +33,9 @@ using namespace std;
 #define CMD_LIST 15
 #define CMD_GET 25
 #define CMD_PUT 35
+#define CMD_PASV 66
+#define CMD_RETR 70
+#define CMD_STOR 71
 
 
 class BaseServer
@@ -46,10 +49,7 @@ protected:
     int _init();
     int _handle_cmd();
 
-    // read request from client
-    int _read_request(const int sockfd, char* rev_buf, size_t buf_len);
-    // write response to client
-    int _write_response(const int sockfd, const char* send_buf);
+
 
     int _print_rev_msg(const char* msg);
 
@@ -57,14 +57,13 @@ protected:
 
     void _create_cmd_reg_map();
 
-    int _handle_cmd_user(const char* user);
-    int _handle_cmd_pass(const char* user, const char* pass);
-    int _handle_cmd_pwd(const char* cur_path);
-    int _handle_cmd_get(const char* server_file);
-    int _handle_cmd_put(const char* client_file);
+    int _get_localhost();
 
     int _parse_config(char* config_path);
 
+    string _root_path;
+
+    string _localhost;
 
     map<string, string> _account;
     map<int, const char*> _cmd_reg_map;

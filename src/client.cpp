@@ -513,6 +513,7 @@ int Client::__retr(string remote, string local) {
 
     int local_fd = open(local.c_str(), O_RDWR | O_CREAT | O_TRUNC, 00664);
     char rev_buf_long[MSG_MAX_LEN_LONG];
+    size_t chunk = 0;
     do {
         n_bytes = read(__data_sockfd, rev_buf_long, MSG_MAX_LEN_LONG - 1);
         if (n_bytes == -1) {
@@ -521,6 +522,7 @@ int Client::__retr(string remote, string local) {
             return -1;
         }
         else if (n_bytes > 0) {
+            cout << "chunk number:" << ++chunk << endl;
             write(local_fd, rev_buf_long, n_bytes);
         }
     } while(n_bytes > 0);
