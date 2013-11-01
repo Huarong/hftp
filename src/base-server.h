@@ -4,8 +4,10 @@
 #include <vector>
 
 #include <arpa/inet.h>
+#include <regex.h>
 
 using namespace std;
+
 
 #define MSG_MAX_LEN_LONG 8192
 #define MSG_MAX_LEN 1024
@@ -45,11 +47,27 @@ protected:
     int _handle_cmd();
 
     // read request from client
-    int _read_request();
+    int _read_request(const int sockfd, char* rev_buf, size_t buf_len);
     // write response to client
-    int _write_response(const char* send_buf);
+    int _write_response(const int sockfd, const char* send_buf);
 
     int _print_rev_msg(const char* msg);
+
+    int _identify_cmd(const char* msg);
+
+    void _create_cmd_reg_map();
+
+    int _handle_cmd_user(const char* user);
+    int _handle_cmd_pass(const char* user, const char* pass);
+    int _handle_cmd_pwd(const char* cur_path);
+    int _handle_cmd_get(const char* server_file);
+    int _handle_cmd_put(const char* client_file);
+
+    int _parse_config(char* config_path);
+
+
+    map<string, string> _account;
+    map<int, const char*> _cmd_reg_map;
 
     int _ctr_sockfd;
     int _data_sockfd;
@@ -61,8 +79,9 @@ protected:
     int _serv_data_port;
 
 
+
 private:
-    virtual void __handle_accept();
+    virtual int __handle_accept();
     virtual void __log(const char* buf) = 0;
 
 };

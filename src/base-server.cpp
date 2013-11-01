@@ -27,6 +27,9 @@ using namespace std;
 BaseServer::BaseServer() {
     _serv_ctr_port = 21;
     _serv_data_port = 20;
+    _create_cmd_reg_map();
+    // to edit
+    _account["hhr"] = "hhrjyy";
 }
 
 BaseServer::~BaseServer() {
@@ -75,17 +78,18 @@ int BaseServer::_init() {
         perror("listen");
         return -1;
     }
+    cout << "listening on port "<< _serv_ctr_port << endl;
+    __handle_accept();
     return 0;
 }
 
-void BaseServer::__handle_accept() {
+int BaseServer::__handle_accept() {
     cout << "you must rewrite method __handle_accept" << endl;
-    return;
+    return 0;
 }
 
-int BaseServer::_read_request() {
-    char rev_buf[MSG_MAX_LEN];
-    int n_bytes = read(_ctr_sockfd, rev_buf, MSG_MAX_LEN - 1);
+int BaseServer::_read_request(const int sockfd, char* rev_buf, size_t buf_len) {
+    int n_bytes = read(sockfd, rev_buf, buf_len -1);
     if (n_bytes == -1) {
         perror("read");
         return -1;
@@ -93,12 +97,11 @@ int BaseServer::_read_request() {
     rev_buf[n_bytes] = '\0';
     _print_rev_msg(rev_buf);
     __log(rev_buf);
-
     return 0;
 }
 
-int BaseServer::_write_response(const char* send_buf) {
-    ssize_t n_bytes = write(_ctr_sockfd, send_buf, strlen(send_buf));
+int BaseServer::_write_response(const int sockfd, const char* send_buf) {
+    ssize_t n_bytes = write(sockfd, send_buf, strlen(send_buf));
     if (n_bytes == -1) {
         perror("write");
         return -1;
@@ -114,4 +117,92 @@ int BaseServer::_print_rev_msg(const char* msg) {
     }
     cout << msg_s;
     return len;
+}
+
+int BaseServer::_identify_cmd(const char* msg) {
+    int status;
+    regmatch_t pmath[1];
+    regex_t reg;
+    int cmd_id =  -1;
+    for (map<int, const char*>::iterator it = _cmd_reg_map.begin(); it != _cmd_reg_map.end(); ++it) {
+        cmd_id = it -> first;
+        const char* pattern = it -> second;
+        regcomp(&reg, pattern, REG_EXTENDED|REG_NEWLINE);
+        status = regexec(&reg, msg, 1, pmath, 0);
+        regfree(&reg);
+        if (status == 0) {
+            cout << "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" << endl;
+            cout << "found:" << cmd_id << endl;
+            break;
+        }
+    }
+    if (-1 != cmd_id) {
+        cout << "cmd_id:" << cmd_id << endl;
+        return cmd_id;
+    }
+    // command not found
+    cout << "command not found" << endl;
+    return -1;
+}
+
+void BaseServer::_create_cmd_reg_map() {
+    const char* pattern;
+    // regex_t reg;
+
+    // "user jay"
+    pattern = "^USER [a-zA-Z0-9_-]+";
+    // regcomp(&reg, pattern, REG_EXTENDED|REG_NEWLINE);
+    _cmd_reg_map[CMD_USER] = pattern;
+
+    // "pass xxx"
+    pattern = "^PASS [a-zA-Z0-9_-]+\\r\\n";
+    // regcomp(&reg, pattern, REG_EXTENDED|REG_NEWLINE);
+    _cmd_reg_map[CMD_PASS] = pattern;
+
+    // "pwd"
+    pattern = "^PWD\\r\\n";
+    // regcomp(&reg, pattern, REG_EXTENDED|REG_NEWLINE);
+    _cmd_reg_map[CMD_PWD] = pattern;
+
+    return;
+}
+
+int BaseServer::_handle_cmd_user(const char* user) {
+    _write_response(_ctr_sockfd, "331 Please specify the password.\r\n");
+    return 0;
+}
+
+int BaseServer::_handle_cmd_pass(const char* user, const char* pass) {
+    // string user_str(user);
+    map<string, string>::iterator it = _account.find(string(user));
+    if (it == _account.end()) {
+        cout << "user not exist" << endl;
+        return -1;
+    }
+    if (string(pass) != it -> second) {
+        _write_response(_ctr_sockfd, "530 Login incorrect.\r\n");
+        return -1;
+    }
+    _write_response(_ctr_sockfd, "230 Login successful.\r\n");
+    return 0;
+}
+
+int BaseServer::_handle_cmd_pwd(const char* cur_path) {
+    char msg[MSG_MAX_LEN_SHORT];
+    sprintf(msg, "257 \"%s\"", cur_path);
+    _write_response(_ctr_sockfd, msg);
+    return 0;
+}
+
+int BaseServer::_handle_cmd_get(const char* server_file) {
+    return 0;
+}
+int BaseServer::_handle_cmd_put(const char* client_file) {
+    return 0;
+}
+
+int BaseServer::_parse_config(char* config_path) {
+    // FILE* config = fopen(config_path, "r");
+
+    return 0;
 }
