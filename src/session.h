@@ -55,6 +55,7 @@ private:
     string __root_path;
     int __connect_sockfd;
     int __data_sockfd;
+    int __connect_data_sockfd;
     struct sockaddr_in __serv_data_addr;
     string __user;
     string __pass;
