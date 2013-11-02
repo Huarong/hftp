@@ -4,6 +4,8 @@
 #include <vector>
 #include <cstdarg>
 
+
+std::string&  replace_all(std::string&   str, const  std::string&  old_value, const  std::string&  new_value)   ;
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 std::vector<std::string> split(const std::string &s, char delim);
 inline std::string &lstrip(std::string &s);

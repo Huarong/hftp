@@ -57,6 +57,24 @@ std::string int_to_string(const int n) {
     return str;
 }
 
+
+// replace all substring
+// replace_all_distinct(string("12212"),"12","21");
+// RETURN: 21221
+// http://www.vimer.cn/2009/11/string%E6%9B%BF%E6%8D%A2%E6%89%80%E6%9C%89%E6%8C%87%E5%AE%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%88c%EF%BC%89.html
+std::string&  replace_all(std::string&   str, const  std::string&  old_value, const  std::string&  new_value)   
+{   
+    for(std::string::size_type pos(0);  pos!=std::string::npos;  pos += new_value.length()) {
+        if(   (pos=str.find(old_value,pos))!=std::string::npos   )   
+            str.replace(pos,old_value.length(),new_value);   
+        else   break;   
+    }   
+    return   str;   
+}   
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////
 
 // int main(int argc, char const *argv[]) {

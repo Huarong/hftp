@@ -139,8 +139,6 @@ int Session::__handle_cmd_pasv(const char* cmd) {
 int Session::__handle_cmd_retr(const char* cmd) {
     char* new_cmd = __strip_CRLF(cmd);
     string filename = split(string(new_cmd), ' ')[1];
-    cout << "----------------------" << endl;
-    cout << filename << endl;
     string abs_filename = __root_path + filename;
     FILE* f = fopen(abs_filename.c_str(), "rb");
     if (f == NULL) {
@@ -189,6 +187,51 @@ int Session::__handle_cmd_retr(const char* cmd) {
 }
 
 int Session::__handle_cmd_stor(const char* cmd) {
+    char* new_cmd = __strip_CRLF(cmd);
+    string filename = split(string(new_cmd), ' ')[1];
+    string abs_filename = __root_path + __cur_path + filename;
+    abs_filename = replace_all(abs_filename, "//", "/");
+    cout << "to send file:" << abs_filename << endl;
+
+    FILE* f = fopen(abs_filename.c_str(), "wb");
+    if (f == NULL) {
+        perror("fopen");
+        return -1;
+    }
+
+///////////////////////////////////////////////////////////////////////////////
+    // accept data request
+    struct sockaddr_in client_data_addr;
+    socklen_t client_data_addr_len = sizeof(client_data_addr);
+    int connect_data_fd = accept(__data_sockfd, (struct sockaddr *) &client_data_addr, &client_data_addr_len);
+    if (connect_data_fd == -1) {
+        perror("accept");
+        return -1;
+    }
+    __connect_data_sockfd = connect_data_fd;
+
+
+    __write_response("150 Ok to send data.\r\n");
+
+    char rev_buf_long[MSG_MAX_LEN_LONG];
+    size_t chunk = 0;
+    int n_bytes;
+    do {
+        n_bytes = read(__connect_data_sockfd, rev_buf_long, MSG_MAX_LEN_LONG - 1);
+        if (n_bytes == -1) {
+            perror("read");
+            close(__connect_data_sockfd);
+            return -1;
+        }
+        else if (n_bytes > 0) {
+            cout << "chunk number:" << ++chunk << endl;
+            fwrite(rev_buf_long, 1, n_bytes, f);
+        }
+    } while(n_bytes > 0);
+    fclose(f);
+    close(__connect_data_sockfd);
+    close(__data_sockfd);
+    __write_response("226 Transfer complete.\r\n");
     return 0;
 }
 
