@@ -14,8 +14,7 @@ protected:
 
 private:
     int __handle_accept();
+    int __handle_an_accept();
     void __log(const char* msg);
 
-    char __rev_buf[MSG_MAX_LEN_SHORT];
-    char __send_buf[MSG_MAX_LEN];
 };

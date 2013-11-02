@@ -6,6 +6,8 @@
 #include <arpa/inet.h>
 #include <regex.h>
 
+#include "session.h"
+
 using namespace std;
 
 
@@ -47,10 +49,10 @@ public:
 
 protected:
     int _init();
-    int _handle_cmd();
+    int _handle_cmds(Session session);
 
 
-
+    Session _create_session(int connect_fd);
     int _print_rev_msg(const char* msg);
 
     int _identify_cmd(const char* msg);
@@ -81,6 +83,8 @@ protected:
 
 private:
     virtual int __handle_accept();
+    virtual int __handle_an_accept();
+
     virtual void __log(const char* buf) = 0;
 
 };

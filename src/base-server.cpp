@@ -94,6 +94,60 @@ int BaseServer::__handle_accept() {
     return 0;
 }
 
+int BaseServer::__handle_an_accept() {
+    cout << "you must rewrite method __handle_an_accept" << endl;
+    return 0;
+}
+
+Session BaseServer::_create_session(int connect_fd) {
+        // create a session
+    Session session = Session(connect_fd, _localhost, _root_path);
+    session.__write_response("220 FTP server from hhr ready.\r\n");
+    return session;
+}
+
+int BaseServer::_handle_cmds(Session session) {
+    char rev_buf[MSG_MAX_LEN_SHORT];
+    while (true) {
+        if (session.__read_request(rev_buf, MSG_MAX_LEN_SHORT) == -1) {
+            cout << "ERROR: read request from client" << endl;
+            return -1;
+        }
+        const char* cmd = rev_buf;
+        int cmd_id = _identify_cmd(cmd);
+        cout << "COMMAND:" << cmd << endl;
+        switch (cmd_id) {
+            case CMD_USER:
+                session.__handle_cmd_user(cmd);
+                break;
+            case CMD_PASS:
+                session.__handle_cmd_pass(cmd, _account);
+                break;
+            case CMD_PWD:
+                session.__handle_cmd_pwd(cmd);
+                break;
+            case CMD_GET:
+                session.__handle_cmd_get(cmd, _root_path);
+                break;
+            case CMD_PUT:
+                session.__handle_cmd_put(cmd);
+                break;
+            case CMD_PASV:
+                session.__handle_cmd_pasv(cmd);
+                break;
+            case CMD_RETR:
+                session.__handle_cmd_retr(cmd);
+                break;
+            case CMD_STOR:
+                session.__handle_cmd_stor(cmd);
+                break;
+            default:
+                cout << "Invalid command" << endl;
+                break;
+        }
+    }
+    return 0;
+}
 
 int BaseServer::_print_rev_msg(const char* msg) {
     string msg_s = string(msg, strlen(msg));
