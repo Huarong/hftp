@@ -1,8 +1,12 @@
 #include <iostream>
 #include <cstdio>
 
+#include <signal.h>
+#include <wait.h>
+
 #include "server-multiprocess.h"
 #include "session.h"
+#include "util.h"
 
 using namespace std;
 
@@ -14,6 +18,7 @@ MultiProcessServer::~MultiProcessServer() {
 
 int MultiProcessServer::__handle_accept() {
     while (true) {
+        signal(SIGCHLD, sig_handler);
         __handle_an_accept();
     }
     return 0;
@@ -39,6 +44,8 @@ int MultiProcessServer::__handle_an_accept() {
     close(connect_fd);
     return 0;
 }
+
+
 
 void MultiProcessServer::__log(const char* msg) {
     FILE* pfile;

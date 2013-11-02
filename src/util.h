@@ -21,7 +21,7 @@ int print_vector(typename std::vector<T>::iterator first, typename std::vector<T
 }
 
 std::string int_to_string(const int n);
-
+void sig_handler(int signum);
 
 // n: number of member to be print
 // template <typename T>

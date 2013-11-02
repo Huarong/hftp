@@ -8,6 +8,9 @@
 #include <locale>
 #include <cstdlib>
 
+#include <signal.h>
+#include <wait.h>
+
 #include "util.h"
 
 // http://stackoverflow.com/a/236803/1282982
@@ -72,7 +75,20 @@ std::string&  replace_all(std::string&   str, const  std::string&  old_value, co
     return   str;   
 }   
 
-
+void sig_handler(int signum) {
+    int stat;
+    pid_t pid;
+    switch (signum) {
+        case SIGCHLD:
+            while ((pid = waitpid(-1, &stat, WNOHANG)) > 0) {
+                std::cout << "child " << pid <<" terminated." << std::endl;
+            }
+            break;
+        default:
+            break;
+    }
+    return;
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
