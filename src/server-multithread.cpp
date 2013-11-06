@@ -99,6 +99,7 @@ void *a_thread(void *) {
     Session session = g_args.server->create_session(g_args.connect_fd);
     pthread_mutex_unlock(g_args.mutex);
     g_args.server->handle_cmds(session);
+    close(g_args.connect_fd);
     pthread_exit(NULL);
 }
 
