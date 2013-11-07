@@ -50,7 +50,6 @@ Session& Session::operator=(const Session &session) {
 int Session::__handle_cmd_user(const char* cmd) {
     char* new_cmd = __strip_CRLF(cmd);
     __user = split(string(new_cmd), ' ')[1];
-    cout << "user:" << __user << endl;
     __write_response("331 Please specify the password.\r\n");
     return 0;
 }

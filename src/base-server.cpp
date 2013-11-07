@@ -75,7 +75,6 @@ int BaseServer::_init() {
         perror("bind");
         return -1;
     }
-    cout << "The sockfd is:" << sockfd << endl;
     printf("Server is listening on port %d\n",ntohs(_serv_ctr_addr.sin_port));
 
     //listen
@@ -84,8 +83,6 @@ int BaseServer::_init() {
         perror("listen");
         return -1;
     }
-    cout << "listening on port "<< _serv_ctr_port << endl;
-    cout << _ctr_sockfd << endl;
     return 0;
 }
 
@@ -155,7 +152,6 @@ int BaseServer::_print_rev_msg(const char* msg) {
     if (len == 0) {
         return 0;
     }
-    cout << msg_s;
     return len;
 }
 
@@ -171,7 +167,6 @@ int BaseServer::_identify_cmd(const char* msg) {
         status = regexec(&reg, msg, 1, pmath, 0);
         regfree(&reg);
         if (status == 0) {
-            cout << "found:" << cmd_id << endl;
             return cmd_id;
         }
     }
@@ -219,13 +214,11 @@ int BaseServer::_parse_config(char* config_path) {
 }
 
 int BaseServer::_get_localhost() {
-    cout << "11111111111111111111111111" << endl;
     char hostname[MSG_MAX_LEN_TINY_SHORT];
     gethostname(hostname, sizeof(hostname));
     struct hostent* host = gethostbyname(hostname);
     char ip[32];
     _localhost = inet_ntop(AF_INET, host->h_addr, ip, sizeof(ip));
-    cout << _localhost << endl;
     cout <<"lcoalhost: " << _localhost << endl;
     return 0;
 }
