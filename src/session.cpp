@@ -30,6 +30,7 @@ Session::Session(int sockfd, string localhost, string root_path) {
     __cur_path = "/";
     __localhost = localhost;
     __root_path = root_path;
+    __alive = true;
 }
 
 Session::Session() {
@@ -46,6 +47,14 @@ Session& Session::operator=(const Session &session) {
     return *this;
 }
 
+bool Session::is_alive() {
+    return __alive;
+}
+
+void Session::terminate() {
+    __alive = false;
+    return;
+}
 
 int Session::__handle_cmd_user(const char* cmd) {
     char* new_cmd = __strip_CRLF(cmd);
@@ -246,6 +255,13 @@ int Session::__handle_cmd_stor(const char* cmd) {
     return 0;
 }
 
+int Session::__handle_cmd_quit(const char* cmd) {
+    string msg = "221 google bye!\r\n";
+    __write_response(msg.c_str());
+    __alive = false;
+    close(__connect_sockfd);
+    return 0;
+}
 
 int Session::__read_request(char* rev_buf, size_t buf_len) {
     int n_bytes = read(__connect_sockfd, rev_buf, buf_len -1);

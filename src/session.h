@@ -20,6 +20,7 @@ using namespace std;
 #define BACKLOG 10
 
 
+
 class Session
 {
 public:
@@ -29,6 +30,8 @@ public:
 
     Session& operator=(const Session &);
 
+    bool is_alive();
+    void terminate();
 
 
     int __handle_cmd_user(const char* cmd);
@@ -39,6 +42,7 @@ public:
     int __handle_cmd_pasv(const char* cmd);
     int __handle_cmd_retr(const char* cmd);
     int __handle_cmd_stor(const char* cmd);
+    int __handle_cmd_quit(const char* cmd);
 
     // read request from client
     int __read_request(char* rev_buf, size_t buf_len);
@@ -55,6 +59,7 @@ public:
     string __cur_path;
 
 private:
+    bool __alive;
     string __root_path;
     int __connect_sockfd;
     int __data_sockfd;

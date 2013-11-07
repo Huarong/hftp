@@ -40,7 +40,7 @@ int MultiThreadServer::__handle_an_accept() {
         return -1;
     }
     __thread_count++;
-    cout << "read to create a thread" << endl;
+    cout << "ready to create a thread" << endl;
     int r;
     r = __create_thread(connect_fd);
     if (r == -1) {

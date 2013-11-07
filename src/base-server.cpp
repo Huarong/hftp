@@ -109,6 +109,10 @@ Session BaseServer::_create_session(int connect_fd) {
 int BaseServer::_handle_cmds(Session session) {
     char rev_buf[MSG_MAX_LEN_SHORT];
     while (true) {
+        if (!session.is_alive()) {
+            cout << "client quit" << endl;
+            return -1;
+        }
         if (session.__read_request(rev_buf, MSG_MAX_LEN_SHORT) == -1) {
             cout << "ERROR: read request from client" << endl;
             return -1;
@@ -140,6 +144,9 @@ int BaseServer::_handle_cmds(Session session) {
                 break;
             case CMD_STOR:
                 session.__handle_cmd_stor(cmd);
+                break;
+            case CMD_QUIT:
+                session.__handle_cmd_quit(cmd);
                 break;
             default:
                 cout << "Invalid command" << endl;
@@ -207,6 +214,12 @@ void BaseServer::_create_cmd_reg_map() {
 
     pattern = "^STOR [a-zA-Z0-9/_-]+";
     _cmd_reg_map[CMD_STOR] = pattern;
+
+
+    // "quit"
+    pattern = "^QUIT";
+    // regcomp(&reg, pattern, REG_EXTENDED|REG_NEWLINE);
+    _cmd_reg_map[CMD_QUIT] = pattern;
 
     return;
 }
