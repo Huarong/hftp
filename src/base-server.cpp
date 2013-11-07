@@ -27,6 +27,7 @@
 using namespace std;
 
 BaseServer::BaseServer() {
+    _server_type = 0;
     _serv_ctr_port = 8888;
     _serv_data_port = 8889;
     _create_cmd_reg_map();
@@ -85,7 +86,6 @@ int BaseServer::_init() {
     }
     cout << "listening on port "<< _serv_ctr_port << endl;
     cout << _ctr_sockfd << endl;
-    __handle_accept();
     return 0;
 }
 

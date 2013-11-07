@@ -32,7 +32,18 @@ Session::Session(int sockfd, string localhost, string root_path) {
     __root_path = root_path;
 }
 
+Session::Session() {
+}
+
 Session::~Session() {
+}
+
+Session& Session::operator=(const Session &session) {
+    __connect_sockfd = session.__connect_sockfd;
+    __cur_path = session.__cur_path;
+    __localhost = session.__localhost;
+    __root_path = session.__root_path;
+    return *this;
 }
 
 
@@ -46,7 +57,6 @@ int Session::__handle_cmd_user(const char* cmd) {
 
 int Session::__handle_cmd_pass(const char* cmd, map<string, string> &account) {
     char* new_cmd = __strip_CRLF(cmd);
-    cout << "new cmd:" << new_cmd << endl;
     __pass = split(string(new_cmd), ' ')[1];
     map<string, string>::iterator it = account.find(string(__user));
     if (it == account.end()) {

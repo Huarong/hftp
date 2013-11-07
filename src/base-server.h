@@ -18,6 +18,11 @@ using namespace std;
 #define CRLF "\r\n"
 #define BACKLOG 10
 
+#define SERVER_TYPE_MP 1
+#define SERVER_TYPE_MT 2
+#define SERVER_TYPE_IO 3
+
+
 // log path for multi-process server
 #define LOG_PATH_SERVER_MP "../log/server-mp.log"
 // log path for multi-thread server
@@ -62,6 +67,8 @@ protected:
     int _get_localhost();
 
     int _parse_config(char* config_path);
+
+    int _server_type;
 
     string _root_path;
 

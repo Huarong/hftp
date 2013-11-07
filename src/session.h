@@ -24,7 +24,10 @@ class Session
 {
 public:
     Session(int sockfd, string localhost, string root_path);
+    Session();
     ~Session();
+
+    Session& operator=(const Session &);
 
 
 
