@@ -28,12 +28,12 @@ using namespace std;
 
 BaseServer::BaseServer() {
     _server_type = 0;
-    _serv_ctr_port = 8888;
-    _serv_data_port = 8889;
+    _serv_ctr_port = 21;
+    _serv_data_port = 22;
     _create_cmd_reg_map();
     // to edit
-    _account["hhr"] = "hhrjyy";
-    _root_path = "/home/hhr/";
+    _account["anonymous"] = "anonymous";
+    _root_path = "/";
     _get_localhost();
 }
 
