@@ -61,6 +61,7 @@ int Session::__handle_cmd_pass(const char* cmd, map<string, string> &account) {
     map<string, string>::iterator it = account.find(string(__user));
     if (it == account.end()) {
         cout << "user not exist" << endl;
+        __write_response("530 user not exist.\r\n");
         return -1;
     }
     if (string(__pass) != it -> second) {
