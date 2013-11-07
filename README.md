@@ -1,4 +1,4 @@
-### executive file
+### Executive file
 
 Executive binary file are in directory `bin`:
 
@@ -23,6 +23,9 @@ password: anonymous
 
 #### Port
 21
+
+#### Server root path:
+/
 
 ### Supported coomands
 
