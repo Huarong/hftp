@@ -144,6 +144,9 @@ int IOMultiplexingServer::__handle_cmds(size_t fd_i) {
                 case CMD_STOR:
                     session->__handle_cmd_stor(cmd);
                     break;
+                case CMD_QUIT:
+                    session->__handle_cmd_quit(cmd);
+                    break;
                 default:
                     cout << "Invalid command" << endl;
                     break;
